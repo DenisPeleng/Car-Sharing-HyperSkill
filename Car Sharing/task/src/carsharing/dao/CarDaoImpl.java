@@ -20,7 +20,6 @@ public class CarDaoImpl extends GeneralDao implements CarDao {
             """;
     private static final String GET_ALL_CARS = "SELECT * FROM CAR WHERE COMPANY_ID = ?";
     private static final String CREATE_CAR = "INSERT INTO CAR (NAME, COMPANY_ID) VALUES(?,?)";
-    private static final String GET_CAR = "SELECT * FROM CAR WHERE COMPANY_ID = ?";
     private final Connection connection;
 
     public CarDaoImpl(Connection connection) {
@@ -39,20 +38,6 @@ public class CarDaoImpl extends GeneralDao implements CarDao {
         }
     }
 
-    @Override
-    public Car getCar(int id) {
-        Car currentCar = null;
-        try (PreparedStatement prepStmt = connection.prepareStatement(GET_CAR)) {
-            prepStmt.setInt(1, id);
-            ResultSet resultSet = prepStmt.executeQuery();
-            if (resultSet.next()) {
-                currentCar = new Car(resultSet.getInt("ID"), resultSet.getString("NAME"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return currentCar;
-    }
 
     @Override
     public List<Car> getAllCars(int idCompany) {
@@ -61,7 +46,7 @@ public class CarDaoImpl extends GeneralDao implements CarDao {
             prepStmt.setInt(1, idCompany);
             ResultSet resultSet = prepStmt.executeQuery();
             while (resultSet.next()) {
-                allCarsList.add(new Car(resultSet.getInt("ID"), resultSet.getString("NAME")));
+                allCarsList.add(new Car(resultSet.getInt("ID"), resultSet.getString("NAME"), resultSet.getInt("COMPANY_ID")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
